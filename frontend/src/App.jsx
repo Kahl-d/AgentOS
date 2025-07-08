@@ -1,9 +1,21 @@
 import './App.css';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Project1 from './projects/Project1';
+import Project2 from './projects/Project2';
+import Project3 from './projects/Project3';
+import ContactWindow from './components/ContactWindow';
+import FolderWindow from './components/FolderWindow';
 
-const PROJECT_FILES = [
-  { name: 'Project 1', content: `This is Project 1.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nSed euismod, nunc ut laoreet dictum, massa erat cursus enim,\nnon dictum enim enim nec urna.\n\n- Feature 1\n- Feature 2\n- Feature 3\n\n${'More content.\n'.repeat(30)}` },
-  { name: 'Project 2', content: `This is Project 2.\n\nUt facilisis, massa nec laoreet dictum, enim erat cursus massa,\nnon dictum enim enim nec urna.\n\n- Item A\n- Item B\n- Item C\n\n${'Extra details.\n'.repeat(25)}` },
+const today = new Date().toLocaleDateString();
+const PROJECTS = [
+  { name: 'Aware: Cultural Capital Theme Classification', component: Project1, modified: today },
+  { name: 'Secure Sense (Winner, SF Hacks 2025 Emerging AI Innovation)', component: Project2, modified: today },
+  { name: 'Context-Aware Data Augmentation Tool for Low Data Scenarios', component: Project3, modified: today },
+];
+
+const FILES = [
+  { name: 'Resume.pdf', type: 'file', icon: '📄', modified: today, size: '120 KB' },
+  // Add more files/folders here as needed
 ];
 
 function useDraggableResizable(initial) {
@@ -64,7 +76,7 @@ function useDraggableResizable(initial) {
   };
 }
 
-function OSWindow({ title, children, onClose, initial, minWidth = 220, minHeight = 120 }) {
+function OSWindow({ title, children, onClose, initial, minWidth = 220, minHeight = 120, appAccent }) {
   const { pos, size, onDragStart, onResizeStart } = useDraggableResizable({
     x: initial.x,
     y: initial.y,
@@ -76,7 +88,11 @@ function OSWindow({ title, children, onClose, initial, minWidth = 220, minHeight
       className="os-window draggable"
       style={{ top: pos.y, left: pos.x, width: size.w, height: size.h, minWidth, minHeight }}
     >
-      <div className="os-window-titlebar" onMouseDown={onDragStart}>
+      <div
+        className="os-window-titlebar"
+        onMouseDown={onDragStart}
+        style={appAccent ? { background: 'linear-gradient(90deg, #6c63ff 70%, #23262f 100%)', color: '#fff' } : {}}
+      >
         <span>{title}</span>
         <button className="os-window-close" onClick={onClose}>✕</button>
       </div>
@@ -132,51 +148,123 @@ function AIBotWindow({ onClose }) {
 
   return (
     <OSWindow
-      title="Khalid's AI Assistant"
+      title={<><span style={{marginRight:8}}>🤖</span>Khalid's AI Assistant</>}
       onClose={onClose}
       initial={{ x: 420, y: 120, w: 340, h: 420 }}
       minWidth={280}
       minHeight={260}
+      appAccent
     >
-      {loading ? (
-        <div className="ai-bot-loading">
-          <div className="ai-bot-spinner" />
-          <div>Welcome to Khalid's Personal Assistant...</div>
-        </div>
-      ) : (
-        <div className="os-window-content flex-col">
-          <div className="ai-bot-chat">
-            <div className="ai-bot-messages">
-              {messages.map((msg, i) => (
-                <div key={i} className={msg.from === 'user' ? 'ai-bot-msg user' : 'ai-bot-msg bot'}>
-                  {msg.text}
-                </div>
-              ))}
-              <div ref={chatEndRef} />
-            </div>
-            <form className="ai-bot-input-row" onSubmit={sendMessage}>
-              <input
-                className="ai-bot-input"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Ask me anything..."
-                disabled={sending}
-              />
-              <button className="ai-bot-send" type="submit" disabled={sending || !input.trim()}>
-                {sending ? '...' : 'Send'}
-              </button>
-            </form>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', flex: 1 }}>
+        {loading ? (
+          <div className="ai-bot-loading" style={{ flex: 1 }}>
+            <div className="ai-bot-spinner" />
+            <div>Welcome to Khalid's Personal Assistant...</div>
           </div>
+        ) : (
+          <div className="os-window-content flex-col" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <div className="ai-bot-chat" style={{ flex: 1, minHeight: 0 }}>
+              <div className="ai-bot-messages" style={{ flex: 1, minHeight: 0 }}>
+                {messages.map((msg, i) => (
+                  <div key={i} className={msg.from === 'user' ? 'ai-bot-msg user' : 'ai-bot-msg bot'}>
+                    {msg.text}
+                  </div>
+                ))}
+                <div ref={chatEndRef} />
+              </div>
+              <form className="ai-bot-input-row" onSubmit={sendMessage} style={{ marginTop: 'auto' }}>
+                <input
+                  className="ai-bot-input"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Ask me anything..."
+                  disabled={sending}
+                />
+                <button className="ai-bot-send" type="submit" disabled={sending || !input.trim()}>
+                  {sending ? '...' : 'Send'}
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+    </OSWindow>
+  );
+}
+
+function ResumeWindow({ onClose }) {
+  return (
+    <OSWindow
+      title="Resume.pdf"
+      onClose={onClose}
+      initial={{ x: 320, y: 120, w: 520, h: 600 }}
+      minWidth={320}
+      minHeight={320}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', flex: 1 }}>
+        <iframe
+          src="/resume.pdf"
+          title="Resume PDF"
+          className="resume-pdf-iframe"
+          style={{ border: '1px solid #bfc9d1', background: '#fff', flex: 1, minHeight: 0 }}
+        />
+        <a
+          href="/resume.pdf"
+          download
+          className="resume-download-btn"
+        >
+          Download PDF
+        </a>
+      </div>
+    </OSWindow>
+  );
+}
+
+function SettingsWindow({ onClose, theme, setTheme }) {
+  return (
+    <OSWindow
+      title="Settings"
+      onClose={onClose}
+      initial={{ x: 540, y: 220, w: 320, h: 220 }}
+      minWidth={220}
+      minHeight={120}
+    >
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        <h3 style={{ marginBottom: 24 }}>Settings</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <span style={{ fontWeight: 500 }}>Theme:</span>
+          <button
+            className="settings-theme-toggle"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            aria-label="Toggle light/dark mode"
+          >
+            {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+          </button>
         </div>
-      )}
+      </div>
     </OSWindow>
   );
 }
 
 function App() {
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const [filesOpen, setFilesOpen] = useState(false);
   const [fileViewer, setFileViewer] = useState(null); // {name, content} or null
   const [aiBotOpen, setAIBotOpen] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    // Try to use system preference or default to light
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   return (
     <div className="desktop-bg">
@@ -189,18 +277,52 @@ function App() {
           <span role="img" aria-label="Work">💼</span>
           <div className="icon-label">Work</div>
         </div>
-        <div className="icon">
+        <div className="icon" onClick={() => setFilesOpen(true)}>
           <span role="img" aria-label="Files">🗂️</span>
           <div className="icon-label">Files</div>
         </div>
+        <div className="icon" onClick={() => setResumeOpen(true)}>
+          <span role="img" aria-label="Resume">📄</span>
+          <div className="icon-label">Resume.pdf</div>
+        </div>
+        <div className="icon" onClick={() => setAIBotOpen(true)}>
+          <span role="img" aria-label="AI Bot">🤖</span>
+          <div className="icon-label">AI Bot</div>
+        </div>
       </div>
-      <div className="ai-bot-placeholder" onClick={() => setAIBotOpen(true)} style={{ cursor: 'pointer' }}>
-        🤖 AI Bot
-      </div>
-      <div className="os-dock">
-        <div className="dock-icon">🗂️</div>
-        <div className="dock-icon">💬</div>
-        <div className="dock-icon">⚙️</div>
+      {/* Top-right widgets */}
+      <div className="top-right-widgets">
+        {/* Settings Widget */}
+        <div className="settings-widget-macos">
+          <div className="settings-title">Settings</div>
+          <div className="settings-toggle-row">
+            <span className="settings-toggle-label">Theme</span>
+            <div
+              className={`settings-toggle-switch ${theme === 'dark' ? 'dark' : 'light'}`}
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              aria-label="Toggle light/dark mode"
+            >
+              <div className="settings-toggle-thumb">
+                {theme === 'dark' ? (
+                  <span className="settings-moon">🌙</span>
+                ) : (
+                  <span className="settings-sun">☀️</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Contact Widget */}
+        <div
+          className="contact-widget-macos"
+          onClick={() => setContactOpen(true)}
+          tabIndex={0}
+          role="button"
+          aria-label="Contact"
+        >
+          <span className="contact-icon">💬</span>
+          <span className="contact-label">Contact</span>
+        </div>
       </div>
 
       {/* Projects Window */}
@@ -208,31 +330,69 @@ function App() {
         <OSWindow
           title="Projects"
           onClose={() => setProjectsOpen(false)}
-          initial={{ x: 120, y: 120, w: 320, h: 320 }}
+          initial={{ x: 120, y: 120, w: 600, h: 480 }}
         >
-          <ul className="os-file-list">
-            {PROJECT_FILES.map((file) => (
-              <li key={file.name} className="os-file-item" onClick={() => setFileViewer(file)}>
-                <span role="img" aria-label="file">📄</span> {file.name}
-              </li>
-            ))}
-          </ul>
+          <FolderWindow
+            items={PROJECTS.map(p => ({
+              name: p.name,
+              type: 'file',
+              icon: '📄',
+              modified: p.modified,
+              size: '',
+              component: p.component
+            }))}
+            onItemOpen={item => setFileViewer(item)}
+            initialView="list"
+          />
         </OSWindow>
       )}
 
       {/* File Viewer Window */}
       {fileViewer && (
         <OSWindow
-          title={fileViewer.name}
+          title={fileViewer.name || fileViewer.displayName || 'File'}
           onClose={() => setFileViewer(null)}
-          initial={{ x: 220, y: 180, w: 400, h: 400 }}
+          initial={{ x: 180, y: 120, w: 700, h: 600 }}
         >
-          <div className="os-file-content" style={{ whiteSpace: 'pre-line' }}>{fileViewer.content}</div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div className="os-file-content" style={{ flex: 1, whiteSpace: 'pre-line', overflow: 'auto', height: '100%' }}>
+              {typeof fileViewer.component === 'function' ? fileViewer.component() : fileViewer.content}
+            </div>
+          </div>
         </OSWindow>
       )}
 
+      {/* Resume PDF Window */}
+      {resumeOpen && <ResumeWindow onClose={() => setResumeOpen(false)} />}
+
       {/* AI Bot Window */}
       {aiBotOpen && <AIBotWindow onClose={() => setAIBotOpen(false)} />}
+
+      {/* Settings Window */}
+      {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} theme={theme} setTheme={setTheme} />}
+
+      {/* Contact Window */}
+      {contactOpen && <ContactWindow onClose={() => setContactOpen(false)} />}
+
+      {/* Files Window */}
+      {filesOpen && (
+        <OSWindow
+          title="Files"
+          onClose={() => setFilesOpen(false)}
+          initial={{ x: 180, y: 140, w: 600, h: 480 }}
+        >
+          <FolderWindow
+            items={FILES}
+            onItemOpen={item => {
+              if (item.name === 'Resume.pdf') {
+                setResumeOpen(true);
+              }
+              // Add more file open logic here as needed
+            }}
+            initialView="list"
+          />
+        </OSWindow>
+      )}
     </div>
   );
 }
