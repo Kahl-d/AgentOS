@@ -9,7 +9,7 @@ from bot import Me
 
 load_dotenv(override=True)
 
-app = FastAPI()
+app = FastAPI(title="Portfolio OS Backend", version="1.0.0")
 
 # Allow CORS for frontend (Safari-compatible)
 app.add_middleware(
