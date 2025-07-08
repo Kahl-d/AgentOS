@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://agent-os-two.vercel.app';
 
 // Debug logging
 console.log('API Configuration:', {
@@ -14,5 +14,6 @@ export const config = {
   API_ENDPOINTS: {
     ask: `${API_BASE_URL}/api/ask`,
     test: `${API_BASE_URL}/api/test`,
+    health: `${API_BASE_URL}/api/health`,
   }
 }; 
