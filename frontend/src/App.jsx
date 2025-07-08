@@ -129,25 +129,61 @@ function AIBotWindow({ onClose }) {
     setMessages((msgs) => [...msgs, userMsg]);
     setInput('');
     setSending(true);
-    // Call backend
+    
+    // Call backend with better error handling for Safari
     try {
       const res = await fetch(config.API_ENDPOINTS.ask, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        mode: 'cors',
+        credentials: 'omit',
         body: JSON.stringify({ question: userMsg.text }),
       });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
       const data = await res.json();
       setMessages((msgs) => [...msgs, { from: 'bot', text: data.answer }]);
-    } catch {
-      setMessages((msgs) => [...msgs, { from: 'bot', text: 'Sorry, there was an error.' }]);
+    } catch (error) {
+      console.error('AI Bot Error:', error);
+      setMessages((msgs) => [...msgs, { 
+        from: 'bot', 
+        text: 'Sorry, there was an error connecting to the AI assistant. Please try again or check your internet connection.' 
+      }]);
     }
     setSending(false);
   };
 
   // Scroll to bottom on new message
-  useState(() => {
+  useEffect(() => {
     if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Test API connection on component mount
+  useEffect(() => {
+    const testAPI = async () => {
+      try {
+        const testUrl = config.API_BASE_URL + '/api/test';
+        console.log('Testing API connection to:', testUrl);
+        const res = await fetch(testUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          mode: 'cors',
+          credentials: 'omit',
+        });
+        const data = await res.json();
+        console.log('API test successful:', data);
+      } catch (error) {
+        console.error('API test failed:', error);
+      }
+    };
+    testAPI();
+  }, []);
 
   return (
     <OSWindow
