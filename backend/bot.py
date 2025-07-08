@@ -4,7 +4,6 @@ import json
 import os
 import requests
 from pypdf import PdfReader
-import gradio as gr
 
 
 load_dotenv(override=True)
@@ -134,5 +133,4 @@ If the user is engaging in discussion, try to steer them towards getting in touc
     
 
 if __name__ == "__main__":
-    me = Me()
-    gr.ChatInterface(me.chat, type="messages").launch() 
+    print("Gradio is not installed. The local chatbot UI is disabled. Use the FastAPI backend instead.") 
