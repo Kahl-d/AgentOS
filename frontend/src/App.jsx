@@ -129,87 +129,25 @@ function AIBotWindow({ onClose }) {
     setMessages((msgs) => [...msgs, userMsg]);
     setInput('');
     setSending(true);
-    
-    // Call backend with better error handling for Safari
+    // Call backend
     try {
-      console.log('Sending message to:', config.API_ENDPOINTS.ask);
-      console.log('Request payload:', { question: userMsg.text });
-      
       const res = await fetch(config.API_ENDPOINTS.ask, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        mode: 'cors',
-        credentials: 'omit',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: userMsg.text }),
       });
-      
-      console.log('Response status:', res.status);
-      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
-      
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      
       const data = await res.json();
-      console.log('Response data:', data);
       setMessages((msgs) => [...msgs, { from: 'bot', text: data.answer }]);
-    } catch (error) {
-      console.error('AI Bot Error:', error);
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-      
-      // More specific error message based on error type
-      let errorMessage = 'Sorry, there was an error connecting to the AI assistant.';
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        errorMessage = 'Network error: Unable to connect to the server. Please check your internet connection.';
-      } else if (error.message.includes('CORS')) {
-        errorMessage = 'CORS error: Browser security policy is blocking the request.';
-      }
-      
-      setMessages((msgs) => [...msgs, { from: 'bot', text: errorMessage }]);
+    } catch {
+      setMessages((msgs) => [...msgs, { from: 'bot', text: 'Sorry, there was an error.' }]);
     }
     setSending(false);
   };
 
   // Scroll to bottom on new message
-  useEffect(() => {
+  useState(() => {
     if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
-  // Test API connection on component mount
-  useEffect(() => {
-    const testAPI = async () => {
-      try {
-        const testUrl = config.API_BASE_URL + '/api/test';
-        console.log('Testing API connection to:', testUrl);
-        console.log('User Agent:', navigator.userAgent);
-        console.log('Is Safari:', /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent));
-        
-        const res = await fetch(testUrl, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          mode: 'cors',
-          credentials: 'omit',
-        });
-        const data = await res.json();
-        console.log('API test successful:', data);
-      } catch (error) {
-        console.error('API test failed:', error);
-        console.error('Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        });
-      }
-    };
-    testAPI();
-  }, []);
 
   return (
     <OSWindow
@@ -249,40 +187,6 @@ function AIBotWindow({ onClose }) {
                   {sending ? '...' : 'Send'}
                 </button>
               </form>
-              <div style={{ marginTop: 8, textAlign: 'center' }}>
-                <button 
-                  onClick={() => {
-                    console.log('Manual API test triggered');
-                    const testAPI = async () => {
-                      try {
-                        const res = await fetch(config.API_ENDPOINTS.test, {
-                          method: 'GET',
-                          headers: { 'Accept': 'application/json' },
-                          mode: 'cors',
-                          credentials: 'omit',
-                        });
-                        const data = await res.json();
-                        console.log('Manual test successful:', data);
-                        setMessages((msgs) => [...msgs, { from: 'bot', text: `API Test: ${data.message}` }]);
-                      } catch (error) {
-                        console.error('Manual test failed:', error);
-                        setMessages((msgs) => [...msgs, { from: 'bot', text: `API Test Failed: ${error.message}` }]);
-                      }
-                    };
-                    testAPI();
-                  }}
-                  style={{ 
-                    fontSize: '0.8rem', 
-                    padding: '4px 8px', 
-                    background: '#f0f0f0', 
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Test API Connection
-                </button>
-              </div>
             </div>
           </div>
         )}

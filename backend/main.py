@@ -9,23 +9,15 @@ from bot import Me
 
 load_dotenv(override=True)
 
-app = FastAPI(title="Portfolio OS Backend", version="1.0.0")
+app = FastAPI()
 
-# Allow CORS for frontend (Safari-compatible)
+# Allow CORS for local frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Vite dev server
-        "http://localhost:3000",  # Alternative dev port
-        "http://localhost:8080",  # Another common dev port
-        "https://khalidmk.vercel.app",  # Your production frontend
-        "https://agent-os-two.vercel.app",  # Your backend (for self-requests)
-        "*"  # Fallback for development
-    ],
-    allow_credentials=False,  # Changed to False for Safari compatibility
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
 )
 
 class AskRequest(BaseModel):
@@ -37,22 +29,7 @@ me = Me()
 
 @app.get("/")
 def read_root():
-    return {"message": "Backend is running!", "status": "healthy"}
-
-@app.get("/api/test")
-def test_endpoint():
-    """Simple test endpoint for debugging"""
-    return {"message": "API is working!", "timestamp": "2024-01-01T00:00:00Z", "cors": "enabled"}
-
-@app.get("/api/health")
-def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "backend": "running", "timestamp": "2024-01-01T00:00:00Z"}
-
-@app.options("/api/ask")
-def options_ask():
-    """Handle CORS preflight requests for Safari"""
-    return {"message": "OK"}
+    return {"message": "Backend is running!"}
 
 @app.post("/api/ask")
 def ask_bot(req: AskRequest):
