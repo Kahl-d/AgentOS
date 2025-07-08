@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import os
+from fastapi.responses import PlainTextResponse
 
 # Import the bot
 import sys
@@ -39,6 +40,15 @@ def ask_bot(req: AskRequest):
     # history is a list of {role, content} dicts
     answer = me.chat(req.question, req.history)
     return {"answer": answer}
+
+@app.get("/api/logs", response_class=PlainTextResponse)
+def get_logs():
+    log_path = os.path.join(os.path.dirname(__file__), '../me/summary.txt')
+    try:
+        with open(log_path, 'r') as f:
+            return f.read()
+    except Exception as e:
+        return f"Error reading logs: {e}"
 
 # This is required for Vercel
 if __name__ == "__main__":

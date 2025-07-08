@@ -151,43 +151,60 @@ function AIBotWindow({ onClose }) {
 
   return (
     <OSWindow
-      title={<><span style={{marginRight:8}}>🤖</span>Khalid's AI Assistant</>}
+      title={
+        <div className="ai-bot-header-bar-minimal">
+          <img src="https://img.icons8.com/color/32/000000/robot-2.png" alt="AI Bot" className="ai-bot-app-icon-minimal" />
+          <span className="ai-bot-header-title-minimal">Khalid's AI Assistant</span>
+        </div>
+      }
       onClose={onClose}
-      initial={{ x: 420, y: 120, w: 340, h: 420 }}
-      minWidth={280}
-      minHeight={260}
+      initial={{ x: 420, y: 120, w: 380, h: 480 }}
+      minWidth={320}
+      minHeight={320}
       appAccent
     >
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', flex: 1 }}>
+      <div className="ai-bot-app-bg">
         {loading ? (
           <div className="ai-bot-loading" style={{ flex: 1 }}>
             <div className="ai-bot-spinner" />
             <div>Welcome to Khalid's Personal Assistant...</div>
           </div>
         ) : (
-          <div className="os-window-content flex-col" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-            <div className="ai-bot-chat" style={{ flex: 1, minHeight: 0 }}>
-              <div className="ai-bot-messages" style={{ flex: 1, minHeight: 0 }}>
-                {messages.map((msg, i) => (
-                  <div key={i} className={msg.from === 'user' ? 'ai-bot-msg user' : 'ai-bot-msg bot'}>
-                    {msg.text}
-                  </div>
-                ))}
-                <div ref={chatEndRef} />
-              </div>
-              <form className="ai-bot-input-row" onSubmit={sendMessage} style={{ marginTop: 'auto' }}>
-                <input
-                  className="ai-bot-input"
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  placeholder="Ask me anything..."
-                  disabled={sending}
-                />
-                <button className="ai-bot-send" type="submit" disabled={sending || !input.trim()}>
-                  {sending ? '...' : 'Send'}
-                </button>
-              </form>
+          <div className="ai-bot-chat-area">
+            <div className="ai-bot-messages-list">
+              {messages.map((msg, i) => (
+                <div key={i} className={`ai-bot-msg-bubble-minimal ${msg.from}`}> 
+                  {msg.from === 'bot' && (
+                    <img
+                      className="ai-bot-msg-avatar-minimal"
+                      src="https://img.icons8.com/color/32/000000/robot-2.png"
+                      alt="Bot"
+                    />
+                  )}
+                  <span className="ai-bot-msg-text-minimal">{msg.text}</span>
+                  {msg.from === 'user' && (
+                    <img
+                      className="ai-bot-msg-avatar-minimal"
+                      src="https://img.icons8.com/color/32/000000/user-male-circle--v2.png"
+                      alt="User"
+                    />
+                  )}
+                </div>
+              ))}
+              <div ref={chatEndRef} />
             </div>
+            <form className="ai-bot-input-row-minimal" onSubmit={sendMessage}>
+              <input
+                className="ai-bot-input-minimal"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Ask me anything..."
+                disabled={sending}
+              />
+              <button className="ai-bot-send-btn-minimal" type="submit" disabled={sending || !input.trim()}>
+                <span className="ai-bot-send-symbol-minimal">→</span>
+              </button>
+            </form>
           </div>
         )}
       </div>
@@ -272,24 +289,40 @@ function App() {
       </div>
       <div className="desktop-icons">
         <div className="icon" onClick={() => setProjectsOpen(true)}>
-          <span role="img" aria-label="Projects">📁</span>
+          <img src="https://img.icons8.com/color/96/000000/folder-invoices--v2.png" alt="Projects" className="desktop-icon-img" />
           <div className="icon-label">Projects</div>
         </div>
+        <div className="icon" onClick={() => setAIBotOpen(true)}>
+          <img src="https://img.icons8.com/color/96/000000/robot-2.png" alt="AI Bot" className="desktop-icon-img" />
+          <div className="icon-label">AI Bot</div>
+        </div>
+        <div className="icon" onClick={() => window.open('tel:4042637813')}> 
+          <img src="https://img.icons8.com/color/96/000000/phone.png" alt="Call" className="desktop-icon-img" />
+          <div className="icon-label">Call</div>
+        </div>
         <div className="icon">
-          <span role="img" aria-label="Work">💼</span>
+          <img src="https://img.icons8.com/color/96/000000/briefcase.png" alt="Work" className="desktop-icon-img" />
           <div className="icon-label">Work</div>
         </div>
+        <div className="icon" onClick={() => window.open('https://github.com/Kahl-d', '_blank', 'noopener noreferrer')}> 
+          <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" className="desktop-icon-img" />
+          <div className="icon-label">GitHub</div>
+        </div>
+        <div className="icon" onClick={() => window.open('https://www.linkedin.com/in/khalidm-khan/', '_blank', 'noopener noreferrer')}>
+          <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn" className="desktop-icon-img" />
+          <div className="icon-label">LinkedIn</div>
+        </div>
         <div className="icon" onClick={() => setFilesOpen(true)}>
-          <span role="img" aria-label="Files">🗂️</span>
+          <img src="https://img.icons8.com/color/96/000000/opened-folder.png" alt="Files" className="desktop-icon-img" />
           <div className="icon-label">Files</div>
         </div>
-        <div className="icon" onClick={() => setResumeOpen(true)}>
-          <span role="img" aria-label="Resume">📄</span>
-          <div className="icon-label">Resume.pdf</div>
+        <div className="icon" onClick={() => window.open('mailto:khalidmehtabk@gmail.com')}> 
+          <img src="https://img.icons8.com/color/96/000000/new-post.png" alt="Email" className="desktop-icon-img" />
+          <div className="icon-label">Email</div>
         </div>
-        <div className="icon" onClick={() => setAIBotOpen(true)}>
-          <span role="img" aria-label="AI Bot">🤖</span>
-          <div className="icon-label">AI Bot</div>
+        <div className="icon" onClick={() => setResumeOpen(true)}>
+          <img src="https://img.icons8.com/color/96/000000/document--v2.png" alt="Resume" className="desktop-icon-img" />
+          <div className="icon-label">Resume.pdf</div>
         </div>
       </div>
       {/* Top-right widgets */}
@@ -317,26 +350,6 @@ function App() {
         {/* Skills Widget */}
         <SkillsWidget />
       </div>
-      {/* Center-bottom contact bar */}
-      <div className="desktop-contact-bar">
-        <a href="mailto:khalidmehtabk@gmail.com" className="contact-icon-btn" aria-label="Email">
-          {/* Email SVG */}
-          <svg width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
-        </a>
-        <a href="tel:4042637813" className="contact-icon-btn" aria-label="Call">
-          {/* Phone SVG */}
-          <svg width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M22 16.92V21a2 2 0 0 1-2.18 2A19.72 19.72 0 0 1 3 5.18 2 2 0 0 1 5 3h4.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.23.72 3.28a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.05.35 2.15.59 3.28.72A2 2 0 0 1 22 16.92z"/></svg>
-        </a>
-        <a href="https://github.com/Kahl-d" className="contact-icon-btn" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-          {/* GitHub SVG */}
-          <svg width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.48 2.87 8.28 6.84 9.63.5.09.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.1-1.5-1.1-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05A9.38 9.38 0 0 1 12 7.07c.85.004 1.71.12 2.51.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"/></svg>
-        </a>
-        <a href="https://www.linkedin.com/in/khalidm-khan/" className="contact-icon-btn" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
-          {/* LinkedIn SVG */}
-          <svg width="26" height="26" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 8a6 6 0 0 1 6 6v5h-4v-5a2 2 0 0 0-4 0v5h-4v-9h4v1.5"/></svg>
-        </a>
-      </div>
-
       {/* Projects Window */}
       {projectsOpen && (
         <OSWindow
@@ -358,7 +371,6 @@ function App() {
           />
         </OSWindow>
       )}
-
       {/* File Viewer Window */}
       {fileViewer && (
         <OSWindow
@@ -373,16 +385,12 @@ function App() {
           </div>
         </OSWindow>
       )}
-
       {/* Resume PDF Window */}
       {resumeOpen && <ResumeWindow onClose={() => setResumeOpen(false)} />}
-
       {/* AI Bot Window */}
       {aiBotOpen && <AIBotWindow onClose={() => setAIBotOpen(false)} />}
-
       {/* Settings Window */}
       {settingsOpen && <SettingsWindow onClose={() => setSettingsOpen(false)} theme={theme} setTheme={setTheme} />}
-
       {/* Files Window */}
       {filesOpen && (
         <OSWindow
