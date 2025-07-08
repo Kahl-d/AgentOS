@@ -45,7 +45,7 @@ export default function FolderWindow({ title, items, onItemOpen, initialView = '
                   onClick={() => onItemOpen(item)}
                   tabIndex={0}
                 >
-                  <td className="folder-table-cell folder-table-name">
+                  <td className="folder-table-cell folder-table-name" style={{ textAlign: 'left' }}>
                     <span className="folder-table-icon" role="img" aria-label={item.type === 'folder' ? 'Folder' : 'File'}>
                       {item.icon || (item.type === 'folder' ? '📁' : '📄')}
                     </span>
