@@ -16,15 +16,16 @@ body, html, #root {
 }
 
 .desktop-icons {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 110px;
-  grid-template-rows: repeat(4, 110px);
-  gap: 24px 32px;
-  justify-content: start;
-  align-content: start;
-  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: calc(100vh);
+  width: 10%;
+  margin-left: 20px;
   margin-top: 40px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0 8px;
 }
 
 .desktop-icons > * {
@@ -45,13 +46,14 @@ body, html, #root {
 }
 
 .icon {
-  cursor: pointer;
-  user-select: none;
+  height: 110px;
+  margin-bottom: 24px;
+  margin-right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  transition: transform 0.12s;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .icon:active {
@@ -1239,12 +1241,15 @@ body, html, #root {
   background: rgba(255,255,255,0.85);
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   box-shadow: 0 4px 32px 0 rgba(108,99,255,0.08);
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
   padding: 0;
+  margin: 0;
 }
 
 .ai-bot-chat-area {
@@ -1385,6 +1390,10 @@ body, html, #root {
   border-top-right-radius: 10px;
   padding: 6px 14px 6px 10px;
   min-height: 36px;
+  margin: 0;
+  box-shadow: none;
+  position: relative;
+  z-index: 1;
 }
 
 .ai-bot-app-icon-minimal {
