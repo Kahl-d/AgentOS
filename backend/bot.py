@@ -4,7 +4,6 @@ import json
 import os
 import requests
 from pypdf import PdfReader
-import gradio as gr
 
 
 load_dotenv(override=True)
@@ -78,14 +77,26 @@ class Me:
     def __init__(self):
         self.openai = OpenAI()
         self.name = "Khalid Khan"
-        reader = PdfReader("me/linkedin.pdf")
-        self.linkedin = ""
-        for page in reader.pages:
-            text = page.extract_text()
-            if text:
-                self.linkedin += text
-        with open("me/summary.txt", "r", encoding="utf-8") as f:
-            self.summary = f.read()
+        
+        # Try to load LinkedIn PDF, fallback to empty string if not available
+        try:
+            reader = PdfReader("me/linkedin.pdf")
+            self.linkedin = ""
+            for page in reader.pages:
+                text = page.extract_text()
+                if text:
+                    self.linkedin += text
+        except Exception as e:
+            print(f"Warning: Could not load LinkedIn PDF: {e}")
+            self.linkedin = "LinkedIn profile not available in deployment."
+        
+        # Load summary text
+        try:
+            with open("me/summary.txt", "r", encoding="utf-8") as f:
+                self.summary = f.read()
+        except Exception as e:
+            print(f"Warning: Could not load summary.txt: {e}")
+            self.summary = "Khalid Khan is a software engineer with experience in web development, AI, and cloud technologies."
 
 
     def handle_tool_call(self, tool_calls):
@@ -130,4 +141,5 @@ If the user is engaging in discussion, try to steer them towards getting in touc
 
 if __name__ == "__main__":
     me = Me()
-    gr.ChatInterface(me.chat, type="messages").launch() 
+    print("Bot initialized successfully!")
+    # For local testing, you can add a simple chat loop here 

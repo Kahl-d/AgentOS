@@ -1,0 +1,33 @@
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Development files
+.env
+.env.local
+*.log
+
+# Large files that shouldn't be deployed
+me/*.pdf
+*.pdf
+
+# Git files
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test_*.py
+*_test.py 
