@@ -78,13 +78,18 @@ class Me:
     def __init__(self):
         self.openai = OpenAI()
         self.name = "Khalid Khan"
-        reader = PdfReader("me/linkedin.pdf")
+        # Handle paths relative to the bot.py location
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        linkedin_path = os.path.join(current_dir, "me/linkedin.pdf")
+        summary_path = os.path.join(current_dir, "me/summary.txt")
+        
+        reader = PdfReader(linkedin_path)
         self.linkedin = ""
         for page in reader.pages:
             text = page.extract_text()
             if text:
                 self.linkedin += text
-        with open("me/summary.txt", "r", encoding="utf-8") as f:
+        with open(summary_path, "r", encoding="utf-8") as f:
             self.summary = f.read()
 
 
