@@ -35,4 +35,9 @@ def read_root():
 def ask_bot(req: AskRequest):
     # history is a list of {role, content} dicts
     answer = me.chat(req.question, req.history)
-    return {"answer": answer} 
+    return {"answer": answer}
+
+# This is required for Vercel
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000) 

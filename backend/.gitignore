@@ -1,15 +1,23 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
 
 # Environment
 .env
+.env.local
+.env.production
+.env.staging
 
 # Virtual Environment
 venv/
+env/
+ENV/
 
 # Logs
 *.log
+logs/
 
 # IDEs
 .vscode/
@@ -17,4 +25,15 @@ venv/
 .DS_Store
 
 # Misc
-*.swp 
+*.swp
+*.swo
+
+# Vercel
+.vercel/
+
+# PDF files (if they contain sensitive data)
+*.pdf
+
+# Temporary files
+*.tmp
+*.temp 

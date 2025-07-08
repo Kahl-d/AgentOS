@@ -7,6 +7,7 @@ import ContactWindow from './components/ContactWindow';
 import FolderWindow from './components/FolderWindow';
 import Wallpaper from './components/Wallpaper';
 import SkillsWidget from './components/SkillsWidget';
+import { config } from './config';
 
 const today = new Date().toLocaleDateString();
 const PROJECTS = [
@@ -130,7 +131,7 @@ function AIBotWindow({ onClose }) {
     setSending(true);
     // Call backend
     try {
-      const res = await fetch('http://localhost:8000/api/ask', {
+      const res = await fetch(config.API_ENDPOINTS.ask, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: userMsg.text }),
